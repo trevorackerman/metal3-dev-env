@@ -45,7 +45,7 @@ EOF
     sudo virsh pool-autostart default
 fi
 
-if [[ $OS == ubuntu ]]; then
+if [[ $OS == ubuntu || $OS == debian ]]; then
   # source ubuntu_bridge_network_configuration.sh
   # shellcheck disable=SC1091
   source ubuntu_bridge_network_configuration.sh
@@ -198,7 +198,7 @@ VBMC_IMAGE=${VBMC_LOCAL_IMAGE:-$VBMC_IMAGE}
 SUSHY_TOOLS_IMAGE=${SUSHY_TOOLS_LOCAL_IMAGE:-$SUSHY_TOOLS_IMAGE}
 
 # Start httpd container
-if [[ $OS == ubuntu ]]; then
+if [[ $OS == ubuntu || $OS == debian ]]; then
   #shellcheck disable=SC2086
   sudo "${CONTAINER_RUNTIME}" run -d --net host --privileged --name httpd-infra ${POD_NAME_INFRA} \
       -v "$IRONIC_DATA_DIR":/shared --entrypoint /bin/runhttpd \

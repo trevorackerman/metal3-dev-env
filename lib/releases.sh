@@ -10,7 +10,7 @@ function get_latest_release() {
   # This gets the latest release as vx.y.z , ignoring any version with a suffix starting with - , for example -rc0
   release_tags_unsorted="$(echo "$release" | jq -r "[.[].tag_name | select( startswith(\"${2:-""}\")) | select(contains(\"-\")==false)]" \
     | cut -sf2 -d\"  | tr '.' ' ' )"
-  if [[ $OS == ubuntu ]]; then
+  if [[ $OS == ubuntu || $OS == debian ]]; then
     release_tags_sorted="$(echo "$release_tags_unsorted" | sort -n +1 +2 )"
   else
     release_tags_sorted="$(echo "$release_tags_unsorted" | sort -nk1 -nk2 -nk3 )"

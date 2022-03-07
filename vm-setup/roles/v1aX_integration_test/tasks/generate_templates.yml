@@ -4,6 +4,7 @@
       api_version: metal3.io/v1alpha1
       kind: BareMetalHost
       namespace: "{{ NAMESPACE }}"
+      name: node-0
     register: bmhs # A list of BMHs
 
   - name: Set fact for NIC names for the first BMH found

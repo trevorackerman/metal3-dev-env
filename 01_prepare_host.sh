@@ -11,9 +11,13 @@ if [[ $(id -u) == 0 ]]; then
   exit 1
 fi
 
-if [[ $OS == ubuntu ]]; then
+if [[ $OS == ubuntu || $OS == debian ]]; then
   sudo apt-get update
-  sudo apt -y install python3-pip
+  sudo apt-get -y install python3-pip
+fi
+
+
+if [[ $OS == ubuntu ]]; then
 
   # Set update-alternatives to python3
   if [[ ${DISTRO} == "ubuntu18" ]]; then
@@ -21,6 +25,37 @@ if [[ $OS == ubuntu ]]; then
   elif [[ ${DISTRO} == "ubuntu20" ]]; then
     sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
   fi
+elif [[ $OS == debian ]]; then
+  sudo apt -y install \
+	apache2-utils \
+	bridge-utils \
+	ca-certificates \
+	python3-jmespath \
+	curl \
+	git \
+	gnupg \
+	jq \
+	libvirt-clients \
+	libvirt-daemon-system \
+	lsb-release \
+	podman \
+	qemu-kvm \
+	virtinst
+  sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  echo \
+   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update
+  sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+  sudo bash -c "echo '{ \"insecure-registries\":[\"192.168.111.1:5000\"] }' > /etc/docker/daemon.json"
+  sudo gpasswd -a "${USER}" docker
+  sudo systemctl restart docker
+  sudo pip3 install \
+	kubernetes \
+	netaddr \
+	lxml \
+	passlib
 elif [[ $OS == "centos" || $OS == "rhel" ]]; then
   sudo dnf upgrade -y
   sudo dnf config-manager --set-enabled powertools

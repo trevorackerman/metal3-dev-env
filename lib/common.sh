@@ -53,7 +53,7 @@ source /etc/os-release
 export DISTRO="${ID}${VERSION_ID%.*}"
 export OS="${ID}"
 export OS_VERSION_ID=$VERSION_ID
-export SUPPORTED_DISTROS=(centos8 rhel8 ubuntu18 ubuntu20)
+export SUPPORTED_DISTROS=(debian11 centos8 rhel8 ubuntu18 ubuntu20)
 
 if [[ ! "${SUPPORTED_DISTROS[*]}" =~ $DISTRO ]]; then
    echo "Supported OS distros for the host are: CentOS Stream 8 or RHEL8 or Ubuntu20.04"
@@ -61,7 +61,7 @@ if [[ ! "${SUPPORTED_DISTROS[*]}" =~ $DISTRO ]]; then
 fi
 
 # Container runtime
-if [[ "${OS}" == ubuntu ]]; then
+if [[ "${OS}" == ubuntu || "${OS}" == debian ]]; then
   export CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-"docker"}
 else
   export CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-"podman"}

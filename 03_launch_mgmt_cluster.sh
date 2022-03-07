@@ -467,7 +467,11 @@ function create_clouds_yaml() {
 # Start a KinD management cluster
 #
 function launch_kind() {
-  cat <<EOF | sudo su -l -c "kind create cluster --name kind --image=${KIND_NODE_IMAGE} --config=- " "$USER"
+  sudo su -l -c 'docker ps -a' "$USER"
+  if [[ $? -ne 0 ]]; then
+    echo "$USER needs to be added to the docker unix group"
+  fi
+  cat <<EOF | sudo su -l -c "kind create cluster --verbosity 9 --name kind --image=${KIND_NODE_IMAGE} --config=- " "$USER"
   kind: Cluster
   apiVersion: kind.x-k8s.io/v1alpha4
   containerdConfigPatches:
